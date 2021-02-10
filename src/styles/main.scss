@@ -1,3 +1,81 @@
+$cell-size: 100px;
+$cell-color: #eee;
+$page-font: "Arial", sans-serif;
+$distance-between-cells: 1px;
+
 body {
   margin: 0;
+}
+
+@mixin cell {
+  box-sizing: border-box;
+  display: none;
+
+  height: $cell-size;
+  width: $cell-size;
+
+  margin-right: $distance-between-cells;
+  margin-bottom: $distance-between-cells;
+
+  background-color: $cell-color;
+  border: 1px solid #000;
+}
+
+.calendar {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  font-family: $page-font;
+  font-size: 30px;
+
+  text-align: center;
+  line-height: 100px;
+
+  width: 7 * ($cell-size + $distance-between-cells);
+  margin: 0 auto;
+
+  & > div {
+    @include cell;
+    position: relative;
+    top: 0;
+    transition: ease 1s;
+  }
+
+  & > div:hover {
+    cursor: pointer;
+    background-color: pink;
+    top: -20px;
+  }
+}
+
+@for $i from 28 through 31 {
+  .calendar-#{$i} {
+    @for $j from 1 through $i {
+      & :nth-child(#{$j}) {
+        display: block;
+      }
+
+      & :nth-child(#{$j})::before {
+        content: "#{$j}";
+      }
+    }
+  }
+}
+
+$margins: (
+  "mon": 0, 
+  "tue": ($cell-size + $distance-between-cells) * 1,
+  "wen": ($cell-size + $distance-between-cells) * 2,
+  "thu": ($cell-size + $distance-between-cells) * 3,
+  "fri": ($cell-size + $distance-between-cells) * 4,
+  "sat": ($cell-size + $distance-between-cells) * 5,
+  "sun": ($cell-size + $distance-between-cells) * 6,
+);
+
+@each $day, $margin in $margins {
+  .calendar-#{$day} > div:first-child {
+    margin-left: $margin;
+  }
 }
